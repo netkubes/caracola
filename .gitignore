@@ -1,0 +1,10 @@
+/_build/
+/deps/
+/doc/
+/cover/
+*.ez
+*.beam
+erl_crash.dump
+.elixir_ls/
+/priv/plts/
+.claude/settings.local.json

@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<!--
+  Minimal FreeSWITCH configuration for the interoperability tests
+  (test/interop/freeswitch_test.exs). Caracola.Test.FreeSwitch copies it to
+  a temporary directory, next to a generated vars.xml with the ports.
+-->
+<document type="freeswitch/xml">
+  <X-PRE-PROCESS cmd="include" data="vars.xml"/>
+
+  <section name="configuration" description="Various Configuration">
+    <configuration name="switch.conf" description="Core Configuration">
+      <settings>
+        <param name="max-sessions" value="1000"/>
+        <param name="sessions-per-second" value="1000"/>
+        <param name="loglevel" value="debug"/>
+        <param name="rtp-start-port" value="$${rtp_start}"/>
+        <param name="rtp-end-port" value="$${rtp_end}"/>
+      </settings>
+    </configuration>
+
+    <configuration name="modules.conf" description="Modules">
+      <modules>
+        <load module="mod_logfile"/>
+        <load module="mod_event_socket"/>
+        <load module="mod_sofia"/>
+        <load module="mod_commands"/>
+        <load module="mod_dptools"/>
+        <load module="mod_dialplan_xml"/>
+        <load module="mod_tone_stream"/>
+      </modules>
+    </configuration>
+
+    <configuration name="logfile.conf" description="File Logging">
+      <settings>
+        <param name="rotate-on-hup" value="true"/>
+      </settings>
+      <profiles>
+        <profile name="default">
+          <settings>
+            <param name="rollover" value="0"/>
+          </settings>
+          <mappings>
+            <map name="all" value="debug,info,notice,warning,err,crit,alert"/>
+          </mappings>
+        </profile>
+      </profiles>
+    </configuration>
+
+    <configuration name="event_socket.conf" description="Socket Client">
+      <settings>
+        <param name="listen-ip" value="127.0.0.1"/>
+        <param name="listen-port" value="$${esl_port}"/>
+        <param name="password" value="ClueCon"/>
+      </settings>
+    </configuration>
+
+    <configuration name="sofia.conf" description="sofia Endpoint">
+      <global_settings>
+        <param name="log-level" value="0"/>
+      </global_settings>
+      <profiles>
+        <profile name="internal">
+          <settings>
+            <param name="context" value="default"/>
+            <param name="sip-ip" value="127.0.0.1"/>
+            <param name="rtp-ip" value="127.0.0.1"/>
+            <param name="ext-sip-ip" value="127.0.0.1"/>
+            <param name="ext-rtp-ip" value="127.0.0.1"/>
+            <param name="sip-port" value="$${sip_port}"/>
+            <param name="ws-binding" value="127.0.0.1:$${ws_port}"/>
+            <param name="dialplan" value="XML"/>
+            <param name="codec-prefs" value="PCMU,PCMA"/>
+            <param name="auth-calls" value="true"/>
+            <param name="auth-all-packets" value="false"/>
+            <param name="challenge-realm" value="auto_from"/>
+            <param name="accept-blind-reg" value="false"/>
+            <param name="accept-blind-auth" value="false"/>
+            <param name="enable-timer" value="true"/>
+            <param name="session-timeout" value="1800"/>
+            <param name="enable-100rel" value="true"/>
+            <param name="manage-presence" value="false"/>
+            <param name="inbound-codec-negotiation" value="generous"/>
+            <param name="nonce-ttl" value="60"/>
+            <param name="rtp-timer-name" value="soft"/>
+            <param name="dtmf-type" value="info"/>
+            <param name="liberal-dtmf" value="true"/>
+            <param name="sip-trace" value="yes"/>
+          </settings>
+        </profile>
+      </profiles>
+    </configuration>
+  </section>
+
+  <section name="dialplan" description="Regex/XML Dialplan">
+    <context name="default">
+      <!-- Echo test -->
+      <extension name="echo">
+        <condition field="destination_number" expression="^9196$">
+          <action application="answer"/>
+          <action application="echo"/>
+        </condition>
+      </extension>
+
+      <!-- Tone, as music on hold -->
+      <extension name="tone">
+        <condition field="destination_number" expression="^9664$">
+          <action application="answer"/>
+          <action application="playback" data="tone_stream://%(1000,4000,440);loops=-1"/>
+        </condition>
+      </extension>
+
+      <!-- Registered users: bridged to their registrations -->
+      <extension name="users">
+        <condition field="destination_number" expression="^(100[0-2])$">
+          <action application="set" data="call_timeout=10"/>
+          <action application="set" data="hangup_after_bridge=true"/>
+          <action application="bridge" data="user/$1@$${domain}"/>
+        </condition>
+      </extension>
+    </context>
+
+    <!-- Calls originated through the event socket -->
+    <context name="public">
+      <extension name="park">
+        <condition field="destination_number" expression="^.*$">
+          <action application="park"/>
+        </condition>
+      </extension>
+    </context>
+  </section>
+
+  <section name="directory" description="User Directory">
+    <domain name="$${domain}">
+      <params>
+        <param name="dial-string" value="{presence_id=${dialed_user}@${dialed_domain}}${sofia_contact(*/${dialed_user}@${dialed_domain})}"/>
+      </params>
+      <groups>
+        <group name="default">
+          <users>
+            <user id="1000">
+              <params><param name="password" value="$${password}"/></params>
+              <variables><variable name="user_context" value="default"/></variables>
+            </user>
+            <user id="1001">
+              <params><param name="password" value="$${password}"/></params>
+              <variables><variable name="user_context" value="default"/></variables>
+            </user>
+            <user id="1002">
+              <params><param name="password" value="$${password}"/></params>
+              <variables><variable name="user_context" value="default"/></variables>
+            </user>
+          </users>
+        </group>
+      </groups>
+    </domain>
+  </section>
+</document>
