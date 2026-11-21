@@ -3,6 +3,34 @@ defmodule CaracolaTest do
 
   alias Caracola.TestService
 
+  defmodule ReadyUA do
+    @moduledoc false
+    use Malla.Service,
+      plugins: [Caracola],
+      sip: [listen: "sip:127.0.0.1:0, <sip:127.0.0.1:0;transport=tcp>"]
+  end
+
+  describe "Caracola.wait_ready/2" do
+    test "waits for the SIP part of a service started in the background" do
+      refute Caracola.ready?(ReadyUA)
+      assert Caracola.wait_ready(ReadyUA, 20) == {:error, :timeout}
+
+      start_supervised!(ReadyUA)
+
+      # As in the README: the first request right after starting
+      assert Caracola.wait_ready(ReadyUA) == :ok
+      assert Caracola.ready?(ReadyUA)
+      # UDP and TCP for the first URI, and TCP for the second
+      assert length(Caracola.listeners(ReadyUA)) == 3
+      [%{local_port: port}] = Caracola.Transport.listeners(ReadyUA, :udp)
+      assert {:ok, 200, []} = Caracola.UAC.options(ReadyUA, "sip:127.0.0.1:#{port}")
+    end
+
+    test "requests to a service not started yet return an error" do
+      assert Caracola.UAC.options(ReadyUA, "sip:127.0.0.1:9") == {:error, :service_not_started}
+    end
+  end
+
   describe "Caracola.Config.validate/1" do
     test "fills in NkSIP defaults" do
       assert {:ok, opts} = Caracola.Config.validate([])

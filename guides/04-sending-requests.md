@@ -44,11 +44,11 @@ not answer generates a `408` response.
 values:
 
 ```elixir
-{:ok, 200, [reason_phrase: "OK", {"server", ["Asterisk"]}]} =
+{:ok, 200, [{:reason_phrase, "OK"}, {"server", ["Asterisk"]}]} =
   Caracola.UAC.options(MyUA, uri, get_meta: [:reason_phrase, "server"])
 ```
 
-Responses to INVITE always have the dialog handle first (`[dialog: dialog]`),
+Responses to INVITE from 101 to 299 have the dialog handle first (`[dialog: dialog]`),
 and 2xx responses to SUBSCRIBE and REFER the subscription handle
 (`[subscription: subscription]`).
 
@@ -89,8 +89,9 @@ Caracola.UAC.message(MyUA, "sip:bob@example.com", [
 ])
 ```
 
-Some options add headers from the service configuration: `:allow`,
-`:supported`, `:accept`, `:allow_event`, `:date`, `:user_agent`. `:contact`
+Some options add headers: `:allow`, `:supported`, `:accept` and
+`:allow_event` from the service configuration, `:date` the current date,
+and `:user_agent` a `Caracola` User-Agent. `:contact`
 adds a Contact with the address of the transport used (INVITE, SUBSCRIBE,
 NOTIFY, REFER and UPDATE get one automatically).
 
@@ -142,6 +143,7 @@ the dialog:
 :ok = Caracola.UAC.ack(dialog)
 {:ok, 200, []} = Caracola.UAC.info(dialog, body: "...", content_type: "application/x")
 {:ok, 200, _} = Caracola.UAC.invite(dialog, body: new_sdp)   # re-INVITE
+:ok = Caracola.UAC.ack(dialog)
 {:ok, 200, []} = Caracola.UAC.bye(dialog)
 ```
 

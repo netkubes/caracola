@@ -10,6 +10,9 @@ other destinations:
   `{:proxy_stateless, uri_set, opts}` - without state.
 
 ```elixir
+# Requests to the domain itself, like REGISTER, are processed here
+defcb sip_route(_scheme, nil, "example.com", _req, _call), do: :process
+
 defcb sip_route(scheme, user, "example.com", _req, call) do
   case Caracola.Registrar.qfind(call.service, scheme, user, "example.com") do
     [] -> {:reply, :temporarily_unavailable}

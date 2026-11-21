@@ -33,7 +33,8 @@ transactions), Caracola:
 `sip_route/5` returns:
 
 * `:process` (the default) - process the request, statefully.
-* `:process_stateless` - process it without a transaction (the reply is
+* `:process_stateless` - process it without a transaction (not for
+  INVITE; the reply is
   sent once, and retransmissions are processed again).
 * `{:reply, reply}` or `{:reply_stateless, reply}` - reply at once.
 * `:proxy`, `{:proxy, uri_set}` or `{:proxy, uri_set, opts}` - proxy it
@@ -100,7 +101,7 @@ of any header by name:
 
 ```elixir
 defcb sip_invite(req, _call) do
-  [agent] = Caracola.Message.header(req, "user-agent")
+  agent = req |> Caracola.Message.header("user-agent") |> List.first()
   %Caracola.URI{user: caller} = req.from
   sdp = Caracola.SDP.from_message(req)
   ...

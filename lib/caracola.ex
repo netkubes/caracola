@@ -106,6 +106,52 @@ defmodule Caracola do
   @spec listeners(module()) :: [Transport.Port.t()]
   def listeners(service), do: Transport.listeners(service)
 
+  @doc """
+  Returns `true` if the SIP part of a service is ready: the service is
+  running, and its call processes and all its listeners have started.
+
+  Malla starts the processes of the plugins in the background, so they are
+  not ready yet when `start_link` returns. See `wait_ready/2`.
+  """
+  @spec ready?(module()) :: boolean()
+  def ready?(service) do
+    with true <- Malla.Service.is_ready?(service),
+         true <- Process.whereis(Call.registry(service)) != nil,
+         true <- Process.whereis(Call.supervisor(service)) != nil,
+         {:ok, listen} <- parse_listen(Call.config(service)[:listen]) do
+      length(listeners(service)) >= length(listen)
+    else
+      _ -> false
+    end
+  end
+
+  @doc """
+  Waits until the SIP part of a service is ready (see `ready?/1`), for up
+  to `timeout` milliseconds (5 seconds by default). Call it after starting
+  a service, before sending requests with it:
+
+      {:ok, _} = MyUA.start_link()
+      :ok = Caracola.wait_ready(MyUA)
+  """
+  @spec wait_ready(module(), non_neg_integer()) :: :ok | {:error, :timeout}
+  def wait_ready(service, timeout \\ 5_000) do
+    wait_ready_until(service, System.monotonic_time(:millisecond) + timeout)
+  end
+
+  defp wait_ready_until(service, deadline) do
+    cond do
+      ready?(service) ->
+        :ok
+
+      System.monotonic_time(:millisecond) >= deadline ->
+        {:error, :timeout}
+
+      true ->
+        Process.sleep(10)
+        wait_ready_until(service, deadline)
+    end
+  end
+
   ## ===================================================================
   ## Plugin callbacks
   ## ===================================================================

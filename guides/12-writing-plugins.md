@@ -1,6 +1,6 @@
 # Writing plugins
 
-SIP extensions are [Malla plugins](https://hexdocs.pm/malla/plugins.html).
+SIP extensions are [Malla plugins](https://hexdocs.pm/malla/04-plugins.html).
 A plugin depends on `Caracola` (or on other SIP plugins), can change the
 configuration of the service, start processes, and implement callbacks.
 
@@ -52,8 +52,10 @@ Some callbacks exist to be extended by plugins:
 * `sip_authorize_data(list, req, call)` builds the authorization list of
   `sip_authorize/3`: a plugin can add values with
   `{:cont, [[value | list], req, call]}` (the registrar adds `:register`).
-* `caracola_callback(fun, args)` is called before every callback to the
-  service (`fun` is its name, as `:sip_notify`, and `args` its arguments).
+* `caracola_callback(fun, args)` is called before the callbacks that the
+  call process makes to the service: the request methods, `sip_route/5`,
+  `sip_authorize/3`, `sip_dialog_update/3`... but not the callbacks of
+  plugins (`fun` is its name, as `:sip_notify`, and `args` its arguments).
   Returning `:cont` calls the callback; `{:done, result}` uses `result`
   instead. Plugins use it to see or handle callbacks before the service,
   which comes first in the chain: `Caracola.Refer` handles the NOTIFYs of

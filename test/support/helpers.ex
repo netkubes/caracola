@@ -18,8 +18,7 @@ defmodule Caracola.Test.Helpers do
   def start_service(service, config \\ []) do
     start_supervised!({service, [test_pid: self()] ++ config})
     # Plugins start their children asynchronously
-    eventually(fn -> Malla.Service.is_ready?(service) end)
-    eventually(fn -> length(Caracola.listeners(service)) >= 2 end)
+    :ok = Caracola.wait_ready(service)
     port(service)
   end
 

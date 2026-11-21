@@ -25,6 +25,7 @@ defmodule MyUA do
 end
 
 {:ok, _} = MyUA.start_link()
+:ok = Caracola.wait_ready(MyUA)
 {:ok, 200, []} = Caracola.UAC.options(MyUA, "sip:sip.example.com")
 ```
 
@@ -59,7 +60,7 @@ See the [plugins guide](guides/10-plugins.md) for the complete list.
 ```elixir
 def deps do
   [
-    {:caracola, "~> 0.1.0-rc.1"}
+    {:caracola, "~> 0.1.0-rc.2"}
   ]
 end
 ```

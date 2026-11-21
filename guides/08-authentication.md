@@ -49,6 +49,7 @@ credentials of its algorithm.
 
 ```elixir
 defcb sip_get_user_pass(user, "example.com", _req, _call), do: MyUsers.password(user) || false
+defcb sip_get_user_pass(_user, _realm, _req, _call), do: false
 
 defcb sip_authorize(auth_list, req, _call) do
   cond do

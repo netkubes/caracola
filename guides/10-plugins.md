@@ -66,7 +66,7 @@ The plugins, by area:
 | Plugin | RFC | What it does |
 |---|---|---|
 | `Caracola.Dispatcher` | | Destination groups: load balancing, health checks, failover |
-| `Caracola.History` | 7044, 5806 | History-Info and Diversion: why a request was retargeted |
+| `Caracola.History` (a helper, not listed in `:plugins`) | 7044, 5806 | History-Info and Diversion: why a request was retargeted |
 
 **Observability**
 

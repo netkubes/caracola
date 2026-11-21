@@ -38,8 +38,8 @@ There are four services, all listening on `127.0.0.1`:
 | `Office.Bob` | random port | Phone of `bob@example.com` |
 | `Office.Voicemail` | random port | `voicemail@example.com` |
 
-The phones are plain user agents. They answer any INVITE with the same
-SDP they received, and send the NOTIFYs they get to the process that
+The phones are plain user agents. They answer at once any INVITE that has
+SDP, with the same SDP they received, and send the NOTIFYs they get to the process that
 started the services, so we can see them in the shell.
 
 The PBX lists the three plugins:
@@ -51,7 +51,10 @@ defmodule Caracola.Tutorial.Office.PBX do
     sip: [listen: "sip:127.0.0.1:5080"],
     # Carol is out
     forward: %{"carol" => "voicemail"}
-  ...
+
+  alias Caracola.{B2BUA, History, Registrar, Transport}
+
+  # ... callbacks, see below
 end
 ```
 
@@ -134,9 +137,9 @@ calling again:
 iex> UAC.bye(dialog)
 {:ok, 200, []}
 iex> UAC.subscribe(Office.Alice, "sip:bob@example.com", event: "dialog", route: route)
-{:ok, 200, [subscription: {:subscription, Office.Alice, "...", "...", "..."}]}
-iex> flush()
-{:notify, "<?xml version=\"1.0\"..."}
+{:ok, 200, [subscription: {:subscription, Caracola.Tutorial.Office.Alice, "...", "...", "..."}]}
+iex> body = receive do {:notify, body} -> body end
+"<?xml version=\"1.0\"..."
 ```
 
 The NOTIFY has the full state of the line. `Caracola.DialogInfo.decode/1`
@@ -148,15 +151,18 @@ iex> doc.dialogs
 []
 ```
 
-Now Alice calls Bob again, and the lamp goes through `early` and `confirmed`
-states, each one in a new NOTIFY with a growing `version`. When the call
-ends, one more NOTIFY tells that the dialog is `terminated`:
+Now Alice calls Bob again, and the lamp goes to `confirmed` (the phones
+answer at once, so there is no `early` state), in new NOTIFYs with a
+growing `version`: the second one adds the targets of the dialog. When the
+call ends, one more NOTIFY tells that the dialog is `terminated`:
 
 ```elixir
 iex> {:ok, 200, [dialog: dialog]} =
 ...>   UAC.invite(Office.Alice, "sip:bob@example.com", [:auto_2xx_ack, route: route, body: sdp])
 iex> flush()
-{:notify, "..."}   # state "early", then "confirmed"
+{:invite, Caracola.Tutorial.Office.Bob, %Caracola.Message{...}}
+{:notify, "..."}   # state "confirmed"
+{:notify, "..."}   # state "confirmed", with the targets
 iex> UAC.bye(dialog)
 iex> flush()
 {:notify, "..."}   # state "terminated"
@@ -199,7 +205,8 @@ The voicemail has received the INVITE. `Caracola.History.entries/1` and
 `Caracola.History.diversions/1` read what the PBX added:
 
 ```elixir
-iex> receive do {:invite, Office.Voicemail, req} -> req end |> History.entries()
+iex> req = receive do {:invite, Office.Voicemail, req} -> req end
+iex> History.entries(req)
 [
   %{index: "1", uri: %Caracola.URI{user: "carol", ...}, cause: nil, ...},
   %{index: "1.1", uri: %Caracola.URI{user: "voicemail", ...}, cause: 302, ...}

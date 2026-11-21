@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.0-rc.2 (2026-11-21)
+
+* `Caracola.ready?/1` and `Caracola.wait_ready/2`: the SIP part of a
+  service starts in the background, after `start_link` returns, so
+  requests sent at once failed with `{:error, :service_not_started}`.
+* Requests sent while a service is starting or stopping return
+  `{:error, :service_not_started}` instead of raising an `ArgumentError`.
+* Guides: fixes in the examples of the small PBX tutorial, getting
+  started, sending and receiving requests, proxies, authentication,
+  observability and writing plugins.
+
 ## 0.1.0-rc.1 (2026-11-21)
 
 First version: a rewrite of NkSIP in Elixir, on Malla.

@@ -28,9 +28,10 @@ defmodule Caracola.Telemetry do
 
     * `[:caracola, :uac, :stop]` - a client transaction received its first
       final response. Measurements: `:duration` (since the request was
-      created). Metadata: `:call_id`, `:method` and `:code`.
+      created) and `:monotonic_time`. Metadata: `:call_id`, `:method` and `:code`.
     * `[:caracola, :uas, :stop]` - a server transaction sent its first final
-      response. Measurements: `:duration` (since the request was received).
+      response. Measurements: `:duration` (since the request was received)
+      and `:monotonic_time`.
       Metadata: `:call_id`, `:method` and `:code`.
 
   ## Dialogs

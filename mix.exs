@@ -1,7 +1,7 @@
 defmodule Caracola.MixProject do
   use Mix.Project
 
-  @version "0.1.0-rc.1"
+  @version "0.1.0-rc.2"
   @source_url "https://github.com/netkubes/caracola"
 
   def project do
@@ -83,6 +83,7 @@ defmodule Caracola.MixProject do
         "README.md": [title: "Overview"],
         "CHANGELOG.md": [title: "Changelog"],
         "ROADMAP.md": [title: "Roadmap"],
+        "LICENSE.md": [title: "License"],
         "guides/01-introduction.md": [title: "Introduction"],
         "guides/02-getting-started.md": [title: "Getting started"],
         "guides/03-tutorial.md": [title: "Tutorial", filename: "tutorial"],

@@ -7,7 +7,7 @@ Add `caracola` to your dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:caracola, "~> 0.1.0-rc.1"}
+    {:caracola, "~> 0.1.0-rc.2"}
   ]
 end
 ```
@@ -71,6 +71,15 @@ children = [
 ]
 ```
 
+The SIP part of the service (its listeners and call processes) starts in
+the background, after `start_link` returns. `Caracola.wait_ready/2` waits
+for it, before sending the first requests:
+
+```elixir
+{:ok, _} = MyUA.start_link()
+:ok = Caracola.wait_ready(MyUA)
+```
+
 `MyUA.stop()` stops it. Services can be reconfigured at runtime (see
 Malla's documentation); a change in the `:sip` configuration restarts the
 SIP part of the service.
@@ -86,7 +95,7 @@ iex> Caracola.UAC.options(MyUA, "sip:sip.example.com")
 
 iex> Caracola.UAC.options(MyUA, "<sip:127.0.0.1:5070;transport=tcp>",
 ...>   get_meta: [:reason_phrase, "server"])
-{:ok, 200, [reason_phrase: "OK", {"server", ["MyServer 1.0"]}]}
+{:ok, 200, [{:reason_phrase, "OK"}, {"server", ["MyServer 1.0"]}]}
 ```
 
 The call waits for the final response, and returns its code and the values

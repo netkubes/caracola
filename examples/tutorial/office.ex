@@ -18,24 +18,12 @@ defmodule Caracola.Tutorial.Office do
   def start do
     for service <- [PBX, Alice, Bob, Voicemail] do
       {:ok, _} = service.start_link(test_pid: self())
-      wait_ready(service)
+      :ok = Caracola.wait_ready(service)
     end
 
     :ok
   end
 
-  defp wait_ready(service, retries \\ 100) do
-    cond do
-      Malla.Service.is_ready?(service) and Caracola.listeners(service) != [] -> :ok
-      retries == 0 -> raise "#{inspect(service)} not ready"
-      true -> wait_again(service, retries)
-    end
-  end
-
-  defp wait_again(service, retries) do
-    Process.sleep(20)
-    wait_ready(service, retries - 1)
-  end
 
   @doc "Stops the services."
   @spec stop() :: :ok

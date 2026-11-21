@@ -30,6 +30,8 @@ defmodule Caracola.Tutorial.Server do
       local_host: "127.0.0.1"
     ]
 
+  alias Caracola.{Registrar, Transport}
+
   # ... callbacks, see below
 end
 ```

@@ -153,6 +153,11 @@ defmodule Caracola.Call do
           {:error, reason} -> {:error, reason}
         end
     end
+  rescue
+    # The registry or its tables are still starting (or stopping)
+    ArgumentError -> {:error, :service_not_started}
+  catch
+    :exit, {:noproc, _} -> {:error, :service_not_started}
   end
 
   defp max_calls(service), do: config(service)[:max_calls] || 100_000

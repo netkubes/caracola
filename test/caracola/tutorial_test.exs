@@ -4,7 +4,7 @@ defmodule Caracola.TutorialTest do
 
   alias Caracola.Tutorial.Office
 
-  # The steps of guides/tutorial.md, run by Caracola.Tutorial.launch/0
+  # The steps of guides/03-tutorial.md, run by Caracola.Tutorial.launch/0
   test "tutorial" do
     on_exit(fn -> Caracola.Tutorial.stop() end)
     assert Caracola.Tutorial.launch() == :ok

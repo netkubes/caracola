@@ -93,7 +93,7 @@ defmodule Caracola.Dialog do
   def list(service, call_id), do: Call.query(service, call_id, :list_dialogs, [])
 
   @doc """
-  Removes a dialog without sending any request (use `Caracola.UAC.bye/2` to
+  Removes a dialog without sending any request (use `Caracola.UAC.bye/3` to
   hang up).
   """
   @spec stop(handle()) :: :ok | {:error, term()}

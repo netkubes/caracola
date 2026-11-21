@@ -26,8 +26,8 @@ Caracola emits `:telemetry` events, described in `Caracola.Telemetry`:
 | `[:caracola, :message, :sent]` | `size` | `service`, `message`, `port` |
 | `[:caracola, :call, :start]` | `system_time`, `monotonic_time` | `service`, `call_id` |
 | `[:caracola, :call, :stop]` | `duration`, `monotonic_time` | `service`, `call_id` |
-| `[:caracola, :uac, :stop]` | `duration` | `service`, `call_id`, `method`, `code` |
-| `[:caracola, :uas, :stop]` | `duration` | `service`, `call_id`, `method`, `code` |
+| `[:caracola, :uac, :stop]` | `duration`, `monotonic_time` | `service`, `call_id`, `method`, `code` |
+| `[:caracola, :uas, :stop]` | `duration`, `monotonic_time` | `service`, `call_id`, `method`, `code` |
 | `[:caracola, :dialog, :start]` | `system_time`, `monotonic_time` | `service`, `call_id`, `dialog_id` |
 | `[:caracola, :dialog, :stop]` | `duration`, `monotonic_time` | `service`, `call_id`, `dialog_id` |
 | `[:caracola, :rate_limit, :reject]` | `count` | `service`, `ip`, `reason` |
