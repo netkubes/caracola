@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.0 (2026-11-26)
+
+First stable version, with the same code as 0.1.0-rc.3.
+
 ## 0.1.0-rc.3 (2026-11-26)
 
 * `LICENSE` is now the verbatim text of the Apache License 2.0 (the

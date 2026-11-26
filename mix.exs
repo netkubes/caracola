@@ -1,7 +1,7 @@
 defmodule Caracola.MixProject do
   use Mix.Project
 
-  @version "0.1.0-rc.3"
+  @version "0.1.0"
   @source_url "https://github.com/netkubes/caracola"
 
   def project do

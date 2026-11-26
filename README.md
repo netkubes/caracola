@@ -64,7 +64,7 @@ See the [plugins guide](guides/10-plugins.md) for the complete list.
 ```elixir
 def deps do
   [
-    {:caracola, "~> 0.1.0-rc.3"}
+    {:caracola, "~> 0.1.0"}
   ]
 end
 ```
