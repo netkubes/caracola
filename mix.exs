@@ -1,7 +1,7 @@
 defmodule Caracola.MixProject do
   use Mix.Project
 
-  @version "0.1.0-rc.2"
+  @version "0.1.0-rc.3"
   @source_url "https://github.com/netkubes/caracola"
 
   def project do
@@ -12,7 +12,7 @@ defmodule Caracola.MixProject do
       description: "SIP stack for Elixir, a rewrite of NkSIP built on Malla.",
       package: package(),
       source_url: @source_url,
-      homepage_url: @source_url,
+      homepage_url: "https://hexdocs.pm/caracola",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -68,9 +68,10 @@ defmodule Caracola.MixProject do
       licenses: ["Apache-2.0"],
       links: %{
         "GitHub" => @source_url,
+        "Docs" => "https://hexdocs.pm/caracola",
         "Changelog" => "https://hexdocs.pm/caracola/changelog.html"
       },
-      files: ~w(lib .formatter.exs mix.exs README.md LICENSE.md CHANGELOG.md)
+      files: ~w(lib .formatter.exs mix.exs README.md LICENSE NOTICE CHANGELOG.md)
     ]
   end
 
@@ -83,7 +84,6 @@ defmodule Caracola.MixProject do
         "README.md": [title: "Overview"],
         "CHANGELOG.md": [title: "Changelog"],
         "ROADMAP.md": [title: "Roadmap"],
-        "LICENSE.md": [title: "License"],
         "guides/01-introduction.md": [title: "Introduction"],
         "guides/02-getting-started.md": [title: "Getting started"],
         "guides/03-tutorial.md": [title: "Tutorial", filename: "tutorial"],

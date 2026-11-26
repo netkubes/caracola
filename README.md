@@ -1,5 +1,9 @@
 # Caracola
 
+[![Hex.pm](https://img.shields.io/hexpm/v/caracola.svg)](https://hex.pm/packages/caracola)
+[![Docs](https://img.shields.io/badge/hex-docs-blue.svg)](https://hexdocs.pm/caracola)
+[![CI](https://github.com/netkubes/caracola/actions/workflows/ci.yml/badge.svg)](https://github.com/netkubes/caracola/actions/workflows/ci.yml)
+
 A SIP stack for Elixir, to build user agents, registrars, proxies,
 redirect servers, B2BUAs and any other SIP application.
 
@@ -60,12 +64,15 @@ See the [plugins guide](guides/10-plugins.md) for the complete list.
 ```elixir
 def deps do
   [
-    {:caracola, "~> 0.1.0-rc.2"}
+    {:caracola, "~> 0.1.0-rc.3"}
   ]
 end
 ```
 
 ## Documentation
+
+The documentation is at [hexdocs.pm/caracola](https://hexdocs.pm/caracola),
+and the package at [hex.pm/packages/caracola](https://hex.pm/packages/caracola).
 
 The guides start with the [introduction](guides/01-introduction.md) and
 [getting started](guides/02-getting-started.md), and the
@@ -77,7 +84,7 @@ baresip and Asterisk interoperability, and load results, are in
 [Interoperability and performance](guides/14-interoperability-and-performance.md),
 and planned work in the [roadmap](ROADMAP.md).
 
-Generate the documentation with:
+Generate the documentation locally with:
 
 ```bash
 mix docs
@@ -96,4 +103,5 @@ and `test` environments.
 ## License
 
 Copyright 2026 Erlnets Technologies. Licensed under the
-[Apache License, Version 2.0](LICENSE.md).
+[Apache License, Version 2.0](https://github.com/netkubes/caracola/blob/main/LICENSE)
+(see also the [NOTICE](https://github.com/netkubes/caracola/blob/main/NOTICE)).

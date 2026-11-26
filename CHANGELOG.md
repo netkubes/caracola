@@ -1,6 +1,12 @@
 # Changelog
 
-## 0.1.0-rc.2 (2026-11-21)
+## 0.1.0-rc.3 (2026-11-26)
+
+* `LICENSE` is now the verbatim text of the Apache License 2.0 (the
+  previous `LICENSE.md` was not), and the copyright notice is in `NOTICE`.
+* README: links to the documentation on HexDocs and to the Hex package.
+
+## 0.1.0-rc.2 (2026-11-22)
 
 * `Caracola.ready?/1` and `Caracola.wait_ready/2`: the SIP part of a
   service starts in the background, after `start_link` returns, so

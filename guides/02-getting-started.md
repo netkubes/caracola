@@ -7,7 +7,7 @@ Add `caracola` to your dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:caracola, "~> 0.1.0-rc.2"}
+    {:caracola, "~> 0.1.0-rc.3"}
   ]
 end
 ```
